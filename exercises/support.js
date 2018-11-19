@@ -137,7 +137,7 @@ const getType = (x) => {
 function curry(fn) {
   assert(
     typeof fn === 'function',
-    typeMismatch('function -> ?', [getType(fn), '?'].join(' -> '), 'curry'),
+    typeMismatch('function -> ?', [getType(fn), '?'].join(' -> '), 'curry')
   );
 
   const arity = fn.length;
@@ -171,7 +171,7 @@ function compose(...fns) {
 
       assert(
         typeof fn === 'function',
-        `Invalid Composition: ${ordinal(n - i)} element in a composition isn't a function`,
+        'Invalid Composition: ${ordinal(n - i)} element in a composition isn\'t a function'
       );
 
       $compose.callees.push(fn.name);
@@ -332,7 +332,7 @@ class IO {
   constructor(io) {
     assert(
       typeof io === 'function',
-      'invalid `io` operation given to IO constructor. Use `IO.of` if you want to lift a value in a default minimal IO context.',
+      'invalid `io` operation given to IO constructor. Use `IO.of` if you want to lift a value in a default minimal IO context.'
     );
 
     this.unsafePerformIO = io;
@@ -369,7 +369,7 @@ class Map {
   constructor(x) {
     assert(
       typeof x === 'object' && x !== null,
-      'tried to create `Map` with non object-like',
+      'tried to create `Map` with non object-like'
     );
 
     this.$value = x;
@@ -414,7 +414,7 @@ class Map {
   traverse(of, fn) {
     return this.reduceWithKeys(
       (f, a, k) => fn(a).map(b => m => m.insert(k, b)).ap(f),
-      of(new Map({})),
+      of(new Map({}))
     );
   }
 }
@@ -428,7 +428,7 @@ class List {
   constructor(xs) {
     assert(
       Array.isArray(xs),
-      'tried to create `List` from non-array',
+      'tried to create `List` from non-array'
     );
 
     this.$value = xs;
@@ -459,7 +459,7 @@ class List {
   traverse(of, fn) {
     return this.$value.reduce(
       (f, a) => fn(a).map(b => bs => bs.concat(b)).ap(f),
-      of(new List([])),
+      of(new List([]))
     );
   }
 }
@@ -520,7 +520,7 @@ class Task {
   constructor(fork) {
     assert(
       typeof fork === 'function',
-      'invalid `fork` operation given to Task constructor. Use `Task.of` if you want to lift a value in a default minimal Task context.',
+      'invalid `fork` operation given to Task constructor. Use `Task.of` if you want to lift a value in a default minimal Task context.'
     );
 
     this.fork = fork;
@@ -586,7 +586,7 @@ const reject = function reject(x) { return Task.rejected(x); };
 const chain = curry(function chain(fn, m) {
   assert(
     typeof fn === 'function' && typeof m.chain === 'function',
-    typeMismatch('Monad m => (a -> m b) -> m a -> m a', [getType(fn), getType(m), 'm a'].join(' -> '), 'chain'),
+    typeMismatch('Monad m => (a -> m b) -> m a -> m a', [getType(fn), getType(m), 'm a'].join(' -> '), 'chain')
   );
 
   return m.chain(fn);
@@ -595,7 +595,7 @@ const chain = curry(function chain(fn, m) {
 const join = function join(m) {
   assert(
     typeof m.chain === 'function',
-    typeMismatch('Monad m => m (m a) -> m a', [getType(m), 'm a'].join(' -> '), 'join'),
+    typeMismatch('Monad m => m (m a) -> m a', [getType(m), 'm a'].join(' -> '), 'join')
   );
 
   return m.join();
@@ -604,7 +604,7 @@ const join = function join(m) {
 const map = curry(function map(fn, f) {
   assert(
     typeof fn === 'function' && typeof f.map === 'function',
-    typeMismatch('Functor f => (a -> b) -> f a -> f b', [getType(fn), getType(f), 'f b'].join(' -> '), 'map'),
+    typeMismatch('Functor f => (a -> b) -> f a -> f b', [getType(fn), getType(f), 'f b'].join(' -> '), 'map')
   );
 
   return f.map(fn);
@@ -613,7 +613,7 @@ const map = curry(function map(fn, f) {
 const sequence = curry(function sequence(of, x) {
   assert(
     typeof of === 'function' && typeof x.sequence === 'function',
-    typeMismatch('(Applicative f, Traversable t) => (a -> f a) -> t (f a) -> f (t a)', [getType(of), getType(x), 'f (t a)'].join(' -> '), 'sequence'),
+    typeMismatch('(Applicative f, Traversable t) => (a -> f a) -> t (f a) -> f (t a)', [getType(of), getType(x), 'f (t a)'].join(' -> '), 'sequence')
   );
 
   return x.sequence(of);
@@ -625,8 +625,8 @@ const traverse = curry(function traverse(of, fn, x) {
     typeMismatch(
       '(Applicative f, Traversable t) => (a -> f a) -> (a -> f b) -> t a -> f (t b)',
       [getType(of), getType(fn), getType(x), 'f (t b)'].join(' -> '),
-      'traverse',
-    ),
+      'traverse'
+    )
   );
 
   return x.traverse(of, fn);
@@ -635,7 +635,7 @@ const traverse = curry(function traverse(of, fn, x) {
 const unsafePerformIO = function unsafePerformIO(io) {
   assert(
     io instanceof IO,
-    typeMismatch('IO a', getType(io), 'unsafePerformIO'),
+    typeMismatch('IO a', getType(io), 'unsafePerformIO')
   );
 
   return io.unsafePerformIO();
@@ -644,7 +644,7 @@ const unsafePerformIO = function unsafePerformIO(io) {
 const liftA2 = curry(function liftA2(fn, a1, a2) {
   assert(
     typeof fn === 'function' && typeof a1.map === 'function' && typeof a1.ap === 'function' && typeof a2.map === 'function',
-    typeMismatch('Applicative f => (a -> b -> c) -> f a -> f b -> f c', [getType(fn), getType(a1), getType(a2)].join(' -> '), 'liftA2'),
+    typeMismatch('Applicative f => (a -> b -> c) -> f a -> f b -> f c', [getType(fn), getType(a1), getType(a2)].join(' -> '), 'liftA2')
   );
 
   return a1.map(fn).ap(a2);
@@ -658,7 +658,7 @@ const always = curry(function always(a, b) { return a; });
 const add = curry(function add(a, b) {
   assert(
     typeof a === 'number' && typeof b === 'number',
-    typeMismatch('Number -> Number -> Number', [getType(a), getType(b), 'Number'].join(' -> '), 'add'),
+    typeMismatch('Number -> Number -> Number', [getType(a), getType(b), 'Number'].join(' -> '), 'add')
   );
 
   return a + b;
@@ -667,7 +667,7 @@ const add = curry(function add(a, b) {
 const concat = curry(function concat(a, b) {
   assert(
     typeof a === 'string' && typeof b === 'string',
-    typeMismatch('String -> String -> String', [getType(a), getType(b), 'String'].join(' -> '), 'concat'),
+    typeMismatch('String -> String -> String', [getType(a), getType(b), 'String'].join(' -> '), 'concat')
   );
 
   return a.concat(b);
@@ -676,7 +676,7 @@ const concat = curry(function concat(a, b) {
 const eq = curry(function eq(a, b) {
   assert(
     getType(a) === getType(b),
-    typeMismatch('a -> a -> Boolean', [getType(a), getType(b), 'Boolean'].join(' -> '), eq),
+    typeMismatch('a -> a -> Boolean', [getType(a), getType(b), 'Boolean'].join(' -> '), eq)
   )
 
   return a === b;
@@ -685,7 +685,7 @@ const eq = curry(function eq(a, b) {
 const filter = curry(function filter(fn, xs) {
   assert(
     typeof fn === 'function' && Array.isArray(xs),
-    typeMismatch('(a -> Boolean) -> [a] -> [a]', [getType(fn), getType(xs), getType(xs)].join(' -> '), 'filter'),
+    typeMismatch('(a -> Boolean) -> [a] -> [a]', [getType(fn), getType(xs), getType(xs)].join(' -> '), 'filter')
   );
 
   return xs.filter(fn);
@@ -694,7 +694,7 @@ const filter = curry(function filter(fn, xs) {
 const flip = curry(function flip(fn, a, b) {
   assert(
     typeof fn === 'function',
-    typeMismatch('(a -> b) -> (b -> a)', [getType(fn), '(b -> a)'].join(' -> '), 'flip'),
+    typeMismatch('(a -> b) -> (b -> a)', [getType(fn), '(b -> a)'].join(' -> '), 'flip')
   );
 
   return fn(b, a);
@@ -703,7 +703,7 @@ const flip = curry(function flip(fn, a, b) {
 const forEach = curry(function forEach(fn, xs) {
   assert(
     typeof fn === 'function' && Array.isArray(xs),
-    typeMismatch('(a -> ()) -> [a] -> ()', [getType(fn), getType(xs), '()'].join(' -> '), 'forEach'),
+    typeMismatch('(a -> ()) -> [a] -> ()', [getType(fn), getType(xs), '()'].join(' -> '), 'forEach')
   );
 
   xs.forEach(fn);
@@ -712,7 +712,7 @@ const forEach = curry(function forEach(fn, xs) {
 const intercalate = curry(function intercalate(str, xs) {
   assert(
     typeof str === 'string' && Array.isArray(xs) && (xs.length === 0 || typeof xs[0] === 'string'),
-    typeMismatch('String -> [String] -> String', [getType(str), getType(xs), 'String'].join(' -> '), 'intercalate'),
+    typeMismatch('String -> [String] -> String', [getType(str), getType(xs), 'String'].join(' -> '), 'intercalate')
   );
 
   return xs.join(str);
@@ -721,7 +721,7 @@ const intercalate = curry(function intercalate(str, xs) {
 const head = function head(xs) {
   assert(
     Array.isArray(xs) || typeof xs === 'string',
-    typeMismatch('[a] -> a', [getType(xs), 'a'].join(' -> '), 'head'),
+    typeMismatch('[a] -> a', [getType(xs), 'a'].join(' -> '), 'head')
   );
 
   return xs[0];
@@ -730,7 +730,7 @@ const head = function head(xs) {
 const last = function last(xs) {
   assert(
     Array.isArray(xs) || typeof xs === 'string',
-    typeMismatch('[a] -> a', [getType(xs), 'a'].join(' -> '), 'last'),
+    typeMismatch('[a] -> a', [getType(xs), 'a'].join(' -> '), 'last')
   );
 
   return xs[xs.length - 1];
@@ -739,7 +739,7 @@ const last = function last(xs) {
 const match = curry(function match(re, str) {
   assert(
     re instanceof RegExp && typeof str === 'string',
-    typeMismatch('RegExp -> String -> Boolean', [getType(re), getType(str), 'Boolean'].join(' -> '), 'match'),
+    typeMismatch('RegExp -> String -> Boolean', [getType(re), getType(str), 'Boolean'].join(' -> '), 'match')
   );
 
   return re.test(str);
@@ -748,7 +748,7 @@ const match = curry(function match(re, str) {
 const prop = curry(function prop(p, obj) {
   assert(
     typeof p === 'string' && typeof obj === 'object' && obj !== null,
-    typeMismatch('String -> Object -> a', [getType(p), getType(obj), 'a'].join(' -> '), 'prop'),
+    typeMismatch('String -> Object -> a', [getType(p), getType(obj), 'a'].join(' -> '), 'prop')
   );
 
   return obj[p];
@@ -757,12 +757,12 @@ const prop = curry(function prop(p, obj) {
 const reduce = curry(function reduce(fn, zero, xs) {
   assert(
     typeof fn === 'function' && Array.isArray(xs),
-    typeMismatch('(b -> a -> b) -> b -> [a] -> b', [getType(fn), getType(zero), getType(xs), 'b'].join(' -> '), 'reduce'),
+    typeMismatch('(b -> a -> b) -> b -> [a] -> b', [getType(fn), getType(zero), getType(xs), 'b'].join(' -> '), 'reduce')
   );
 
   return xs.reduce(
     function $reduceIterator($acc, $x) { return fn($acc, $x); },
-    zero,
+    zero
   );
 });
 
@@ -773,7 +773,7 @@ const safeProp = curry(function safeProp(p, obj) { return Maybe.of(prop(p, obj))
 const sortBy = curry(function sortBy(fn, xs) {
   assert(
     typeof fn === 'function' && Array.isArray(xs),
-    typeMismatch('Ord b => (a -> b) -> [a] -> [a]', [getType(fn), getType(xs), '[a]'].join(' -> '), 'sortBy'),
+    typeMismatch('Ord b => (a -> b) -> [a] -> [a]', [getType(fn), getType(xs), '[a]'].join(' -> '), 'sortBy')
   );
 
   return xs.sort((a, b) => {
@@ -788,7 +788,7 @@ const sortBy = curry(function sortBy(fn, xs) {
 const split = curry(function split(s, str) {
   assert(
     typeof s === 'string' && typeof str === 'string',
-    typeMismatch('String -> String -> [String]', [getType(s), getType(str), '[String]'].join(' -> '), 'split'),
+    typeMismatch('String -> String -> [String]', [getType(s), getType(str), '[String]'].join(' -> '), 'split')
   );
 
   return str.split(s);
@@ -797,7 +797,7 @@ const split = curry(function split(s, str) {
 const take = curry(function take(n, xs) {
   assert(
     typeof n === 'number' && (Array.isArray(xs) || typeof xs === 'string'),
-    typeMismatch('Number -> [a] -> [a]', [getType(n), getType(xs), getType(xs)].join(' -> '), 'take'),
+    typeMismatch('Number -> [a] -> [a]', [getType(n), getType(xs), getType(xs)].join(' -> '), 'take')
   );
 
   return xs.slice(0, n);
@@ -806,7 +806,7 @@ const take = curry(function take(n, xs) {
 const toLowerCase = function toLowerCase(s) {
   assert(
     typeof s === 'string',
-    typeMismatch('String -> String', [getType(s), '?'].join(' -> '), 'toLowerCase'),
+    typeMismatch('String -> String', [getType(s), '?'].join(' -> '), 'toLowerCase')
   );
 
   return s.toLowerCase();
@@ -815,7 +815,7 @@ const toLowerCase = function toLowerCase(s) {
 const toUpperCase = function toUpperCase(s) {
   assert(
     typeof s === 'string',
-    typeMismatch('String -> String', [getType(s), '?'].join(' -> '), 'toLowerCase'),
+    typeMismatch('String -> String', [getType(s), '?'].join(' -> '), 'toLowerCase')
   );
 
   return s.toUpperCase();
@@ -1006,8 +1006,6 @@ if (typeof module === 'object') {
     // Utils
     withSpyOn,
     inspect,
-
-    // Essential FP helpers
     always,
     chain,
     compose,

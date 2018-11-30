@@ -37,5 +37,7 @@
     "url": "https://github.com/MostlyAdequate/mostly-adequate-guide/issues"
   },
   "homepage": "https://github.com/MostlyAdequate/mostly-adequate-guide",
-  "dependencies": {}
+  "dependencies": {
+    "moment": "^2.22.2"
+  }
 }
